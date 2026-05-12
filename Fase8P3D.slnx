@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Fase8P3D/Fase8P3D.vcxproj" Id="a9a42b00-92ec-4125-8bb5-60d370dd911f" />
+</Solution>
