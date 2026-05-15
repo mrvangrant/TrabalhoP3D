@@ -116,18 +116,28 @@ int main() {
 	// --------------------------------------------------
 	// Para um programa shader, indica os tipos de shaders que serão usados e os respetivos caminhos para os ficheiros de código shader
 	std::vector<ShaderSource> sources = {
-		{GL_VERTEX_SHADER, "light.vert" /*"default_shader.vert"*/},
-		{GL_FRAGMENT_SHADER, "light.frag" /*"default_shader.frag"*/}
+		{GL_VERTEX_SHADER, /*"light.vert"*/ "default_shader.vert"},
+		{GL_FRAGMENT_SHADER, /*"light.frag"*/ "default_shader.frag"}
 	};
+
+	
+
+	
 	// Cria o programa shader (lê e compila os shaders de um programa shader, a partir dos ficheiros especificados em 'sources')
 	// O nome do shader é opcional, mas pode ser útil para identificação
+	
+
 	Shader* shader = new Shader(sources, "DefaultShader");
+
+
+
 
 	// --------------------------------------------------
 	// Preparação do(s) renderizador(es)
 	// --------------------------------------------------
 	// Cria o renderizador com o shader especificado e o caminho do modelo 3D (ficheiro OBJ)
 	Renderer* renderer = new Renderer(shader, "model.obj");
+	Renderer* cuberenderer = new Renderer(shader, "Cube.obj");
 
 	// --------------------------------------------------
 	// Preparação do(s) comportamento(s) do(s) objeto(s)
@@ -149,6 +159,11 @@ int main() {
 	//terceiro objeto
 	gep3d::Object* object3 = new gep3d::Object("Objecto (3)", "", nullptr, renderer, -1.0f, -2.0f, -3.0f);
 
+	// criar um cubo
+	gep3d::Object* cube = new gep3d::Object("Cube", "", nullptr, cuberenderer, 2.0f, 0.0f, 0.0f);
+	
+
+
 	LOG("Object created with ID: " << object1->id() << " at position: (0, -1, 0).");
 	LOG("Object created with ID: " << object2->id() << " at position: (0, 0, -7).");
 	LOG("Object created with ID: " << object3->id() << " at position: (-1, -2, -3).");
@@ -158,6 +173,7 @@ int main() {
 	game.AddObject(object1);
 	game.AddObject(object2);
 	game.AddObject(object3);
+	game.AddObject(cube);
 
 	// --------------------------------------------------
 	// Inicia o loop do jogo
@@ -172,6 +188,9 @@ int main() {
 	delete oscilator;	// Liberta a memória alocada para o comportamento
 	delete object1;		// Liberta a memória alocada para o objeto
 	delete object2;		// Liberta a memória alocada para o objeto
+	delete object3;		// Liberta a memória alocada para o objeto
+	delete cube;		// Liberta a memória alocada para o cubo
+	delete cuberenderer;	// Liberta a memória alocada para o renderizador do cubo
 
 	LOG("Exit!");
 

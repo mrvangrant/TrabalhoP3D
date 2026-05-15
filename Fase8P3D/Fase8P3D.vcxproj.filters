@@ -99,4 +99,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default_shader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\default_shader.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\light.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\light.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

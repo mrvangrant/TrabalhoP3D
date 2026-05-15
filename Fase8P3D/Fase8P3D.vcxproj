@@ -157,6 +157,12 @@
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="WindowSystem.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default_shader.frag" />
+    <None Include="shaders\default_shader.vert" />
+    <None Include="shaders\light.frag" />
+    <None Include="shaders\light.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
