@@ -17,6 +17,9 @@
 
 #include "Transform.h" // Inclui a classe 'Transform'
 
+#include "Common.h" // Para definições comuns e macros (como 'Layer')
+#include <string> // Para std::string
+
 
 namespace game_engine_p3d {
 
@@ -28,6 +31,13 @@ namespace game_engine_p3d {
 	class Light; // Declaração antecipada da classe 'Light'
 	class Renderer; // Declaração antecipada da classe 'Renderer'
 	class Behaviour; // Declaração antecipada da classe 'Behaviour'
+
+	struct BallComponent {
+		glm::vec3 velocity = glm::vec3(0.0f); // velocidade (m/s)
+		float radius = 0.5f;                 // raio da bola (m)
+		float mass = 1.0f;                   // massa (kg).
+		float restitution = 0.8f;           // 80% da força é mantida após a colisão (20% de perda)
+	};
 
 
 	class Object {
@@ -48,6 +58,11 @@ namespace game_engine_p3d {
 		void set_game(Game* game) { game_ = game; }	// Associa a instância do jogo ao objeto
 		Game* game() const { return game_; }		// Retorna a instância do jogo associada ao objeto
 		Transform& model() { return model_; }		// Retorna a transformação associada ao objeto (matriz Model)
+		
+		// Ball component accessors (kinematic)
+		void set_ball(BallComponent* ball) { ball_ = ball; }
+		BallComponent* ball() const { return ball_; }
+		
 		// ------------------------------------------------------------
 		// Funções de ciclo de vida do objeto
 		// ------------------------------------------------------------
@@ -75,5 +90,6 @@ namespace game_engine_p3d {
 		Transform model_;			// Transformação associada ao objeto (matriz Model)
 		Behaviour* behaviour_ = nullptr;	// Comportamento associado ao objeto (pode ser nulo se não houver comportamento)
 		Renderer* renderer_ = nullptr;		// Renderizador associado ao objeto (usado para desenhar o objeto). Pode ser nulo, se não houver renderização associada.
+		BallComponent* ball_ = nullptr;	// Componente opcional de bola (cinemática)
 	};
 }

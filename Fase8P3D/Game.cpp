@@ -2,9 +2,13 @@
 #include <thread> // std::this_thread::sleep_for()
 #include <chrono> // std::chrono::duration<>()
 #include <tuple>  // std::tie()
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <algorithm>
 
 #include "Common.h" // Para definições comuns e macros
 #include "Game.h"
+#include "Object.h"
 
 
 namespace game_engine_p3d {
@@ -155,6 +159,88 @@ namespace game_engine_p3d {
 						// Atualiza a física do objeto
 						object->PhysicsUpdate();
 					}
+
+					///////////////////////////////////////////////////////////////
+					////////// Colisões entre bolas (cinemática simples) //////////
+					///////////////////////////////////////////////////////////////
+
+					// Coleciona bolas
+					std::vector<game_engine_p3d::Object*> balls;
+					for (auto object : objects_) {
+						if (object->ball() != nullptr) {
+							balls.push_back(object);
+						}
+					}
+
+					// integra a posição das bolas usando a sua velocidade
+					for (auto obj : balls) {
+						auto* b = obj->ball();
+						if (b == nullptr) continue;
+						if (b->mass == 0.0f) continue;
+						obj->model().position_ += b->velocity * kPhysicsTimeStep;
+					}
+
+					// Loop de pares de bolas pra checkar colisão
+					for (size_t i = 0; i < balls.size(); ++i) {
+						for (size_t j = i + 1; j < balls.size(); ++j) {
+							game_engine_p3d::Object* Aobj = balls[i];
+							game_engine_p3d::Object* Bobj = balls[j];
+
+							// Puxa os componentes de forma segura
+							game_engine_p3d::BallComponent* A = Aobj->ball();
+							game_engine_p3d::BallComponent* B = Bobj->ball();
+							if (!A || !B) continue;
+
+							// Calcula a distância usando as posições dos Transforms dos Objetos
+							glm::vec3 posA = Aobj->model().position_;
+							glm::vec3 posB = Bobj->model().position_;
+
+							glm::vec3 n = posB - posA;
+							float distance = glm::length(n);
+							float radiusSum = A->radius + B->radius;
+
+
+							if (distance < radiusSum) {
+								
+								// Calcula a normalização do vetor de colisão
+								glm::vec3 n_norm;
+								if (distance < 1e-6f) {
+									// Evitar div por 0
+									n_norm = glm::vec3(1.0f, 0.0f, 0.0f);
+									distance = 1e-6f;
+								}
+								else {
+									n_norm = n / distance;
+								}
+
+								float overlap = radiusSum - distance;
+
+								// Afasta um bocado as bolas para ficarem só encostadas
+								Aobj->model().position_ -= n_norm * (overlap * 0.5f);
+								Bobj->model().position_ += n_norm * (overlap * 0.5f);
+
+								// Componentes de velocidade ao longo da normal
+								float vAn = glm::dot(A->velocity, n_norm);
+								float vBn = glm::dot(B->velocity, n_norm);
+
+								// Se já estiverem a separar, não aplicar impulso
+								if (vBn - vAn <= 0.0f) continue;
+
+								// restituição (perda de força)
+								float e = std::min(A->restitution, B->restitution);
+
+								// Para massas idênticas, delta normal a aplicar a cada bola:
+								float delta = (1.0f + e) * (vBn - vAn) * 0.5f;
+
+								// Aplicar mudanças apenas na componente normal
+								A->velocity += delta * n_norm;
+								B->velocity -= delta * n_norm;
+							}
+						}
+					}
+
+					//Fim da integração de colisões entre bolas
+
 					for (auto object : objects_) {
 						// Atualiza cada objeto na fase final
 						object->LateUpdate();
