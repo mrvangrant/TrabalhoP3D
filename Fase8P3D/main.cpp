@@ -52,9 +52,9 @@ int main() {
 	// Define a cor de fundo da câmara
 	camera.set_background_color(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	// Define a posição da câmara e o ponto de vista
-	camera.LookAt(glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	camera.LookAt(glm::vec3(0.0f, 10.0f, 30.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	// Define a projeção perspetiva da câmara
-	camera.Prespective(45.0f, static_cast<float>(game.width()) / game.height(), 0.1f, 100.0f);
+	camera.Prespective(30.0f, static_cast<float>(game.width()) / game.height(), 0.1f, 100.0f);
 	//camera.Orthographic(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f); // Define a projeção ortográfica
 	// Define a viewport da câmara
 	camera.Viewport(game.width(), game.height(), 0, 0);
@@ -74,7 +74,7 @@ int main() {
 	gep3d::Light* ambient_light = new gep3d::Light(glm::vec3(0.1f, 0.1f, 0.1f)); // Cor da luz ambiente
 	// Cria uma luz direcional (ex: sol)
 	gep3d::Light* directional_light = new gep3d::Light(
-		glm::vec3(0.0f, 0.0f, -1.0f),	// Direção da luz
+		glm::vec3(0.0f, -1.5f, -5.0f),	// Direção da luz
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente difusa
 		glm::vec3(1.0f, 1.0f, 1.0f)     // Componente especular
@@ -91,8 +91,8 @@ int main() {
 	);
 	// Cria uma luz cónica (spotlight)
 	gep3d::Light* spot_light = new gep3d::Light(
-		glm::vec3(0.0f, 0.0f, -1.0f),  // Posição da luz
-		glm::vec3(0.0f, 0.0f, -1.0f),   // Direção da luz
+		glm::vec3(0.0f, 6.0f, 3.0f),  // Posição da luz
+		glm::vec3(0.0f, -0.5f, -4.0f),   // Direção da luz
 		glm::vec3(0.0f, 0.0f, 0.0f),    // Componente ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente difusa
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente especular
@@ -116,12 +116,9 @@ int main() {
 	// --------------------------------------------------
 	// Para um programa shader, indica os tipos de shaders que serão usados e os respetivos caminhos para os ficheiros de código shader
 	std::vector<ShaderSource> sources = {
-		{GL_VERTEX_SHADER, /*"light.vert"*/ "default_shader.vert"},
-		{GL_FRAGMENT_SHADER, /*"light.frag"*/ "default_shader.frag"}
+		{GL_VERTEX_SHADER, "light.vert"},
+		{GL_FRAGMENT_SHADER, "light.frag"}
 	};
-
-	
-
 	
 	// Cria o programa shader (lê e compila os shaders de um programa shader, a partir dos ficheiros especificados em 'sources')
 	// O nome do shader é opcional, mas pode ser útil para identificação
@@ -137,7 +134,25 @@ int main() {
 	// --------------------------------------------------
 	// Cria o renderizador com o shader especificado e o caminho do modelo 3D (ficheiro OBJ)
 	Renderer* renderer = new Renderer(shader, "model.obj");
-	Renderer* cuberenderer = new Renderer(shader, "Cube.obj");
+
+	Renderer* tablerrenderer = new Renderer(shader, "mesa_bilhar_texturizada.obj");
+
+	// Criar renderizadores para as bolas
+	Renderer* ballrenderer1 = new Renderer(shader, "Ball1.obj");
+	Renderer* ballrenderer2 = new Renderer(shader, "Ball2.obj");
+	Renderer* ballrenderer3 = new Renderer(shader, "Ball3.obj");
+	Renderer* ballrenderer4 = new Renderer(shader, "Ball4.obj");
+	Renderer* ballrenderer5 = new Renderer(shader, "Ball5.obj");
+	Renderer* ballrenderer6 = new Renderer(shader, "Ball6.obj");
+	Renderer* ballrenderer7 = new Renderer(shader, "Ball7.obj");
+	Renderer* ballrenderer8 = new Renderer(shader, "Ball8.obj");
+	Renderer* ballrenderer9 = new Renderer(shader, "Ball9.obj");
+	Renderer* ballrenderer10 = new Renderer(shader, "Ball10.obj");
+	Renderer* ballrenderer11 = new Renderer(shader, "Ball11.obj");
+	Renderer* ballrenderer12 = new Renderer(shader, "Ball12.obj");
+	Renderer* ballrenderer13 = new Renderer(shader, "Ball13.obj");
+	Renderer* ballrenderer14 = new Renderer(shader, "Ball14.obj");
+	Renderer* ballrenderer15 = new Renderer(shader, "Ball15.obj");
 
 	// --------------------------------------------------
 	// Preparação do(s) comportamento(s) do(s) objeto(s)
@@ -152,29 +167,44 @@ int main() {
 	// Cria um objeto com nome "Objecto (1)" e layer padrão ("" = "Default")
 	// Atribui um comportamento 'oscilator' ao objeto, que será executado no ciclo de atualização do jogo
 	// Atribui um renderizador ao objeto, que será usado para renderizar o objeto no jogo
-	// Define a posição do objeto como (0, 0, 0), no sistema de coordenadas local, com orientação e escala padrão
-	gep3d::Object* object1 = new gep3d::Object("Objecto (1)", "", oscilator, renderer, 0.0f, -1.0f, 0.0f);
-	// Cria um segundo objeto com nome "Objecto (2)" e layer padrão, sem comportamento, mas com o mesmo renderizador do primeiro objeto, e posiciona-o em (0, 0, -4)
-	gep3d::Object* object2 = new gep3d::Object("Objecto (2)", "", nullptr, renderer, 0.0f, 0.0f, -7.0f);
-	//terceiro objeto
-	gep3d::Object* object3 = new gep3d::Object("Objecto (3)", "", nullptr, renderer, -1.0f, -2.0f, -3.0f);
-
-	// criar um cubo
-	gep3d::Object* cube = new gep3d::Object("Cube", "", nullptr, cuberenderer, 2.0f, 0.0f, 0.0f);
+	gep3d::Object* table = new gep3d::Object("Mesa", "", nullptr, tablerrenderer, 0.0f, -0.75f, -15.0f, 0.0f,90.0f,0.0f,15.0f,15.0f,15.0f);
 	
 
+	gep3d::Object* ball1 = new gep3d::Object("Ball1", "", nullptr, ballrenderer1, -5.5f, 0.0f, -4.0f);
+	gep3d::Object* ball2 = new gep3d::Object("Ball2", "", nullptr, ballrenderer2, 4.5f, 0.0f, -4.0f);
+	gep3d::Object* ball3 = new gep3d::Object("Ball3", "", nullptr, ballrenderer3, -0.5f, 0.0f, -6.0f);
+	gep3d::Object* ball4 = new gep3d::Object("Ball4", "", nullptr, ballrenderer4, 1.5f, 0.0f, -8.0f);
+	gep3d::Object* ball5 = new gep3d::Object("Ball5", "", nullptr, ballrenderer5, -2.5f, 0.0f, -10.0f);
+	gep3d::Object* ball6 = new gep3d::Object("Ball6", "", nullptr, ballrenderer6, 5.5f, 0.0f, -10.0f);
+	gep3d::Object* ball7 = new gep3d::Object("Ball7", "", nullptr, ballrenderer7, -1.5f, 0.0f, -13.0f);
+	gep3d::Object* ball8 = new gep3d::Object("Ball8", "", nullptr, ballrenderer8, 3.5f, 0.0f, -13.0f);
+	gep3d::Object* ball9 = new gep3d::Object("Ball9", "", nullptr, ballrenderer9, 1.5f, 0.0f, -17.0f);
+	gep3d::Object* ball10 = new gep3d::Object("Ball10", "", nullptr, ballrenderer10, -3.5f, 0.0f, -18.0f);
+	gep3d::Object* ball11 = new gep3d::Object("Ball11", "", nullptr, ballrenderer11, -0.5f, 0.0f, -21.0f);
+	gep3d::Object* ball12 = new gep3d::Object("Ball12", "", nullptr, ballrenderer12, 4.5f, 0.0f, -21.0f);
+	gep3d::Object* ball13 = new gep3d::Object("Ball13", "", nullptr, ballrenderer13, -3.5f, 0.0f, -24.0f);
+	gep3d::Object* ball14 = new gep3d::Object("Ball14", "", nullptr, ballrenderer14, 3.5f, 0.0f, -25.0f);
+	gep3d::Object* ball15 = new gep3d::Object("Ball15", "", nullptr, ballrenderer15, -0.5f, 0.0f, -27.0f);
 
-	LOG("Object created with ID: " << object1->id() << " at position: (0, -1, 0).");
-	LOG("Object created with ID: " << object2->id() << " at position: (0, 0, -7).");
-	LOG("Object created with ID: " << object3->id() << " at position: (-1, -2, -3).");
 	// --------------------------------------------------
 	// Adiciona o(s) objeto(s) ao jogo
 	// --------------------------------------------------
-	game.AddObject(object1);
-	game.AddObject(object2);
-	game.AddObject(object3);
-	game.AddObject(cube);
-
+	game.AddObject(table);
+	game.AddObject(ball1);
+	game.AddObject(ball2);
+	game.AddObject(ball3);
+	game.AddObject(ball4);
+	game.AddObject(ball5);
+	game.AddObject(ball6);
+	game.AddObject(ball7);
+	game.AddObject(ball8);
+	game.AddObject(ball9);
+	game.AddObject(ball10);
+	game.AddObject(ball11);
+	game.AddObject(ball12);
+	game.AddObject(ball13);
+	game.AddObject(ball14);
+	game.AddObject(ball15);
 	// --------------------------------------------------
 	// Inicia o loop do jogo
 	// --------------------------------------------------
@@ -186,11 +216,42 @@ int main() {
 	delete shader;		// Liberta a memória alocada para o shader
 	delete renderer;	// Liberta a memória alocada para o renderizador
 	delete oscilator;	// Liberta a memória alocada para o comportamento
-	delete object1;		// Liberta a memória alocada para o objeto
-	delete object2;		// Liberta a memória alocada para o objeto
-	delete object3;		// Liberta a memória alocada para o objeto
-	delete cube;		// Liberta a memória alocada para o cubo
-	delete cuberenderer;	// Liberta a memória alocada para o renderizador do cubo
+	delete table;
+	delete tablerrenderer;
+	delete ball1;
+	delete ballrenderer1;
+	delete ball2;
+	delete ballrenderer2;
+	delete ball3;
+	delete ballrenderer3;
+	delete ball4;
+	delete ballrenderer4;
+	delete ball5;
+	delete ballrenderer5;
+	delete ball6;
+	delete ballrenderer6;
+	delete ball7;
+	delete ballrenderer7;
+	delete ball8;
+	delete ballrenderer8;
+	delete ball9;
+	delete ballrenderer9;
+	delete ball10;
+	delete ballrenderer10;
+	delete ball11;
+	delete ballrenderer11;
+	delete ball12;
+	delete ballrenderer12;
+	delete ball13;
+	delete ballrenderer13;
+	delete ball14;
+	delete ballrenderer14;
+	delete ball15;
+	delete ballrenderer15;
+	delete ambient_light;
+	delete directional_light;
+	delete point_light;
+	delete spot_light;
 
 	LOG("Exit!");
 
