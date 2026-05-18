@@ -75,6 +75,34 @@ namespace game_engine_p3d {
 		LOG("Spotlight created at position: (" << position_.x << ", " << position_.y << ", " << position_.z << ") with direction: (" << direction_.x << ", " << direction_.y << ", " << direction_.z << ")");
 	}
 
+
+	// Função para ativar/desativar a luz
+	void Light::set_enabled(bool enabled) {
+		if (enabled == enabled_) return;
+
+		if (!enabled) {
+			// Guardar valores atuais e desliga a luz (zera componentes)
+			ambient_backup_ = ambient_;
+			diffuse_backup_ = diffuse_;
+			specular_backup_ = specular_;
+			ambient_ = glm::vec3(0.0f);
+			diffuse_ = glm::vec3(0.0f);
+			specular_ = glm::vec3(0.0f);
+			enabled_ = false;
+			LOG("Light disabled.");
+		}
+		else {
+			// Restaura valores guardados
+			ambient_ = ambient_backup_;
+			diffuse_ = diffuse_backup_;
+			specular_ = specular_backup_;
+			enabled_ = true;
+			LOG("Light enabled.");
+		}
+	}
+
+
+
 	std::string Light::type_string() const {
 		// Retorna o tipo da luz como string (ex: "Ambient", "Directional", etc.)
 		switch (type_) {

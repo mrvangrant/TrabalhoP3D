@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Renderer.h" // Inclui a classe 'Renderer', que define o renderizador a associar a cada objeto do jogo
 
+
 // ------------------------------------------------------------
 // É aqui que se incluem as suas classes de comportamento personalizados
 // ------------------------------------------------------------
@@ -16,6 +17,37 @@
 
 // Usar um namespace mais curto para facilitar a escrita do código, e.g., 'gep3d::Game' em vez de 'game_engine_p3d::Game'
 namespace gep3d = game_engine_p3d;
+
+
+//Função de callback para eventos de teclado(1,2,3,4)
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action != GLFW_PRESS) return;// Processa apenas eventos de pressionamento de tecla (ignora os eventos de liberação e repetição)
+		
+	if (key == GLFW_KEY_1) {
+		if (gep3d::Game::instance()){
+			gep3d::Game::instance()->ToggleLight(0); // Alterna a luz de índice 0 (Ambiente)
+			LOG("Toggled light 0 (Ambient)---------------------------------------------------------------------------------------------------");
+		}
+	}
+	else if (key == GLFW_KEY_2) {
+		if (gep3d::Game::instance()) {
+			gep3d::Game::instance()->ToggleLight(1); // Alterna a luz de índice 1 (Direcional)
+			LOG("Toggled light 1 (Direcional)-------------------------------------------------------------------------------------------------");
+		}
+	}
+	else if (key == GLFW_KEY_3) {
+		if (gep3d::Game::instance()) {
+			gep3d::Game::instance()->ToggleLight(2); // Alterna a luz de índice 2 (Pontual)
+			LOG("Toggled light 2 (Pontual)-------------------------------------------------------------------------------------------------------");
+		}
+	}
+	else if (key == GLFW_KEY_4) {
+		if (gep3d::Game::instance()) {
+			gep3d::Game::instance()->ToggleLight(3); // Alterna a luz de índice 3 (Conica)
+			LOG("Toggled light 3 (Conica)-----------------------------------------------------------------------------------------------------------");
+		}
+	}
+}
 
 
 int main() {
@@ -43,6 +75,8 @@ int main() {
 	// Cria uma instância do jogo
 	// --------------------------------------------------
 	gep3d::Game game(1200, 800);
+
+	gep3d::WindowSystem::SetKeyCallback(keyCallback);
 
 	// --------------------------------------------------
 	// Preparação da(s) câmara(s)
@@ -110,6 +144,7 @@ int main() {
 	game.AddLight(point_light);
 	// Adiciona a luz cónica ao jogo
 	game.AddLight(spot_light);
+
 
 	// --------------------------------------------------
 	// Preparação do(s) programa(s) shader
@@ -191,8 +226,13 @@ int main() {
 	delete object3;		// Liberta a memória alocada para o objeto
 	delete cube;		// Liberta a memória alocada para o cubo
 	delete cuberenderer;	// Liberta a memória alocada para o renderizador do cubo
+	delete ambient_light;	// Liberta a memória alocada para a luz ambiente
+	delete directional_light;	// Liberta a memória alocada para a luz direcional
+	delete point_light;		// Liberta a memória alocada para a luz pontual
+	delete spot_light;		// Liberta a memória alocada para a luz cónica
 
 	LOG("Exit!");
 
 	return 0;
 }
+

@@ -93,6 +93,11 @@ namespace game_engine_p3d {
 		// ------------------------------------------------------------
 		void AddLayerToLightLayers(Layer layer); // Adiciona uma layer às layers que a luz afeta
 
+		//Funções para ativar/desativar a luz
+		bool enabled() const { return enabled_; }
+		void set_enabled(bool enabled);
+
+
 	private:
 		// ------------------------------------------------------------
 		// Dados-membro privados
@@ -110,5 +115,12 @@ namespace game_engine_p3d {
 		float outerCutOff_ = 60.0f; // Ângulo de corte externo para luz spot (em graus, relevante para luzes spot)
 		// Layers que a luz afeta (mesmos nomes que os utilizados nas 'culling masks' das câmaras)
 		std::vector<Layer> light_layers_{ "Default" }; // Por defeito afeta apenas a layer "Default"
+
+
+		// Estados de ativação da luz e backup
+		bool enabled_ = true;
+		glm::vec3 ambient_backup_{ ambient_ };
+		glm::vec3 diffuse_backup_{ diffuse_ };
+		glm::vec3 specular_backup_{ specular_ };
 	};
 }
