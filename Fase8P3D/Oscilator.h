@@ -41,13 +41,13 @@ public:
 	void Update(Object& object) override {
 		Object* obj = object.game()->FindObjectByName("Objecto (2)"); // Encontra o objeto "Objecto (2)" no jogo
 		Object* obj3 = object.game()->FindObjectByName("Objecto (3)"); // Encontra o objeto "Objecto (3)" no jogo
-		obj->model().Rotate(0.0f, 0.1f, 0.0f); // Roda o objeto "Objecto (2)" ligeiramente ao longo do eixo y em cada frame
+		obj->model().Rotate(0.0f, 4.1f, 0.0f); // Roda o objeto "Objecto (2)" ligeiramente ao longo do eixo y em cada frame
 		
 
 		tempo_ += 0.1f * velocidade_; // Incrementa o tempo acumulado
 		//LOG("[Oscilator] Update() invoked -> tempo_ = " << tempo_);
 
-		obj3->model().Translate(0.0f, 0.0f, 3.0f * cos(tempo_)); // Move o objeto "Objecto (3)" ligeiramente para a frente em cada frame
+		obj3->model().Translate(0.0f, 0.0f, 2.0f * cos(tempo_)); // Move o objeto "Objecto (3)" ligeiramente para a frente em cada frame
 
 
 		// Atualiza a posição do objeto "Objecto (1)" para oscilar em torno do eixo Y com base no tempo acumulado

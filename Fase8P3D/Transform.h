@@ -23,7 +23,7 @@
 
 namespace game_engine_p3d {
 
-	class Transform {
+	class Transform{
 	public:
 		// ------------------------------------------------------------
 		// Construtores e destrutores
@@ -49,5 +49,10 @@ namespace game_engine_p3d {
 		// glm::quat orientation_quat_ = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // Quaternion de orientação, i.e. rotação,  inicializado como identidade.
 		glm::vec3 scale_ = glm::vec3(1.0f);			// scale_x, scale_y, scale_z
 		glm::mat4 matrix_ = glm::mat4(1.0f);		// Matriz de transformação (inicializada como matriz identidade).
+
+
+
+		
 	};
+
 }
