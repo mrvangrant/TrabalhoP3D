@@ -9,6 +9,7 @@ uniform sampler2D TexSampler;
 // Estrutura da fonte de luz ambiente global
 struct AmbientLight {
 	vec3 ambient;	// Componente de luz ambiente global
+	bool enabled;	// Indica se a fonte de luz ambiente global está ativa ou não
 };
 
 uniform AmbientLight ambientLight; // Fonte de luz ambiente global
@@ -20,6 +21,7 @@ struct DirectionalLight	{
 	vec3 ambient;		// Componente de luz ambiente
 	vec3 diffuse;		// Componente de luz difusa
 	vec3 specular;		// Componente de luz especular
+	bool enabled;		// Indica se a fonte de luz direcional está ativa ou não
 };
 
 uniform DirectionalLight directionalLight; // Fonte de luz direcional
@@ -35,6 +37,8 @@ struct PointLight	{
 	float constant;		// Coeficiente de atenuação constante
 	float linear;		// Coeficiente de atenuação linear
 	float quadratic;	// Coeficiente de atenuação quadrática
+
+	bool enabled;		// Indica se a fonte de luz pontual está ativa ou não
 };
 
 uniform PointLight pointLight[2]; // Duas fontes de luz pontual
@@ -53,6 +57,8 @@ struct SpotLight {
 
 	float spotCutoff, spotExponent;
 	vec3 spotDirection;
+
+	bool enabled;		// Indica se a fonte de luz cónica está ativa ou não
 };
 
 uniform SpotLight spotLight; // Fonte de luz cónica
@@ -134,7 +140,7 @@ void main()
 	}
 
 	// Combinar com ambiente de forma mais suave
-	vec4 finalAmbient = ambient * 0.2; // Reduzir ainda mais a contribuição ambiente
+	vec4 finalAmbient = ambient; // Reduzir ainda mais a contribuição ambiente
 	fColor = emissive + finalAmbient + directLighting;
 	fColor = min(fColor, 1.0);
 	// ----------------------------------------------------------------
@@ -147,14 +153,24 @@ void main()
 	//fColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 }
 
+// Cálculo da contribuição da fonte de luz ambiente global para a cor final do fragmento.
 vec4 calcAmbientLight(AmbientLight light) {
-	// Cálculo da contribuição da fonte de luz ambiente global, para a cor do objeto.
+
+	if(!light.enabled)
+		return vec4(0.0);
+
 	vec4 ambient = vec4(material.ambient * light.ambient, 1.0);
 	return ambient;
 }
 
+// Cálculo da contribuição da fonte de luz direcional para a cor final do fragmento.
 vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient) {
-	// Cálculo da reflexão da componente da luz ambiente.
+
+	if(!light.enabled) {
+		ambient = vec4(0.0);
+		return vec4(0.0);
+	}
+
 	ambient = vec4(material.ambient * light.ambient, 1.0);
 
 	// Cálculo da reflexão da componente da luz difusa.
@@ -182,8 +198,14 @@ vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient) {
 	return (diffuse + specular);
 }
 
+// Cálculo da contribuição da fonte de luz direcional para a cor final do fragmento.
 vec4 calcPointLight(PointLight light, out vec4 ambient) {
-	// Cálculo da reflexão da componente da luz ambiente.
+
+	if(!light.enabled) {
+		ambient = vec4(0.0);
+		return vec4(0.0);
+	}
+
 	ambient = vec4(material.ambient * light.ambient, 1.0);
 
 	// Cálculo da reflexão da componente da luz difusa.
@@ -218,9 +240,14 @@ vec4 calcPointLight(PointLight light, out vec4 ambient) {
 	return (attenuation * (diffuse + specular));
 }
 
+// Cálculo da contribuição da fonte de luz cónica para a cor final do fragmento.
 vec4 calcSpotLight(SpotLight light, out vec4 ambient) 
 {
-	// Cálculo da reflexão da componente da luz ambiente.
+	if(!light.enabled) {
+		ambient = vec4(0.0);
+		return vec4(0.0);
+	}
+
 	ambient = vec4(material.ambient * light.ambient, 1.0);
 
 	// Cálculo da reflexão da componente da luz difusa.

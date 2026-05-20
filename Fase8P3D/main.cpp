@@ -105,20 +105,20 @@ int main() {
 	// Preparação da(s) luzes(es)
 	// --------------------------------------------------
 	// Cria uma luz ambiente
-	gep3d::Light* ambient_light = new gep3d::Light(glm::vec3(0.1f, 0.1f, 0.1f)); // Cor da luz ambiente
+	gep3d::Light* ambient_light = new gep3d::Light(glm::vec3(5.0f, 5.0f, 5.0f)); // Cor da luz ambiente
 	// Cria uma luz direcional (ex: sol)
 	gep3d::Light* directional_light = new gep3d::Light(
 		glm::vec3(0.0f, 0.0f, -1.0f),	// Direção da luz
-		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente ambiente
+		glm::vec3(0.5f, 0.5f, 0.5f),    // Componente ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente difusa
-		glm::vec3(1.0f, 1.0f, 1.0f)     // Componente especular
+		glm::vec3(0.3f, 0.3f, 0.3f)     // Componente especular
 	);
 	// Cria uma luz pontual (ex: lâmpada)
 	gep3d::Light* point_light = new gep3d::Light(
 		glm::vec3(0.0f, 0.0f, -1.0f),	// Posição da luz
-		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente ambiente
+		glm::vec3(0.5f, 0.5f, 0.5f),    // Componente ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente difusa
-		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente especular
+		glm::vec3(0.5f, 0.5f, 0.5f),    // Componente especular
 		1.0f,                           // Constante de atenuação
 		0.09f,                          // Linear de atenuação
 		0.032f                          // Quadrática de atenuação
@@ -151,8 +151,8 @@ int main() {
 	// --------------------------------------------------
 	// Para um programa shader, indica os tipos de shaders que serão usados e os respetivos caminhos para os ficheiros de código shader
 	std::vector<ShaderSource> sources = {
-		{GL_VERTEX_SHADER, /*"light.vert"*/ "default_shader.vert"},
-		{GL_FRAGMENT_SHADER, /*"light.frag"*/ "default_shader.frag"}
+		{GL_VERTEX_SHADER, "light.vert" /*"default_shader.vert"*/},
+		{GL_FRAGMENT_SHADER, "light.frag" /*"default_shader.frag"*/}
 	};
 
 	

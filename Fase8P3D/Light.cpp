@@ -78,27 +78,12 @@ namespace game_engine_p3d {
 
 	// Função para ativar/desativar a luz
 	void Light::set_enabled(bool enabled) {
-		if (enabled == enabled_) return;
+		enabled_ = enabled;
 
-		if (!enabled) {
-			// Guardar valores atuais e desliga a luz (zera componentes)
-			ambient_backup_ = ambient_;
-			diffuse_backup_ = diffuse_;
-			specular_backup_ = specular_;
-			ambient_ = glm::vec3(0.0f);
-			diffuse_ = glm::vec3(0.0f);
-			specular_ = glm::vec3(0.0f);
-			enabled_ = false;
-			LOG("Light disabled.");
-		}
-		else {
-			// Restaura valores guardados
-			ambient_ = ambient_backup_;
-			diffuse_ = diffuse_backup_;
-			specular_ = specular_backup_;
-			enabled_ = true;
+		if (enabled_)
 			LOG("Light enabled.");
-		}
+		else
+			LOG("Light disabled.");
 	}
 
 
