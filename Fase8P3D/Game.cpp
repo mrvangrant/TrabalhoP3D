@@ -9,8 +9,15 @@
 
 namespace game_engine_p3d {
 
+	// Declara e inicializa o apontador estático para a instância do jogo
+	Game* Game::instance_ = nullptr;
+
+
 	Game::Game(unsigned int width, unsigned int height, const char* title)
 		: width_{ width }, height_{ height }, title_{ title }, state_{ GameState::kGameStateInitialization } {
+
+		instance_ = this; // Define a instância atual do jogo para o apontador estático (útil para callbacks, etc.)
+
 		LOG("Game initialization will proceed using the following parameters:");
 		LOG("  Game version: " << kGameVersion);
 		LOG("  Debug mode: " << (kDebugMode ? "Enabled" : "Disabled"));
@@ -54,6 +61,9 @@ namespace game_engine_p3d {
 	}
 
 	Game::~Game() {
+
+		instance_ = nullptr; // Limpa o apontador para a instância do jogo
+
 		LOG("Game instance is being destroyed...");
 
 		// Finaliza o sistema de entrada, liberando recursos alocados
@@ -119,6 +129,7 @@ namespace game_engine_p3d {
 		}
 		return nullptr; // Retorna nullptr se o objeto não for encontrado
 	}
+	
 
 	void Game::Run() {
 		while (state_ != GameState::kGameStateShutdown) {
@@ -295,4 +306,21 @@ namespace game_engine_p3d {
 		// Incrementa o contador de frames
 		frameCount_++;
 	}
+
+	// Permite alternar uma luz pelo índice (0..n-1)
+	void Game::ToggleLight(size_t index) {
+		if (index >= lights_.size()) {
+			LOG("ToggleLight: index out of range: " << index);
+			return;
+		}
+		Light* light = lights_[index];
+		if (!light) {
+			LOG("ToggleLight: light pointer is null at index " << index);
+			return;
+		}
+		bool newState = !light->enabled();
+		light->set_enabled(newState);
+		LOG("Toggled light " << index << " to " << (newState ? "ON" : "OFF"));
+	}
+
 }

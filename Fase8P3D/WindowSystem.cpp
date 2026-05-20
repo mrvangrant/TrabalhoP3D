@@ -108,6 +108,7 @@ namespace game_engine_p3d {
 		glfwWaitEvents();
 	}
 
+
 	// Retorna 'true' se a tecla foi (está) pressionada e 'false' caso contrário
 	bool WindowSystem::GetKey(int key) {
 		if (glfwGetKey(window_, key) == GLFW_PRESS) {
@@ -132,11 +133,22 @@ namespace game_engine_p3d {
 		}
 	}
 
+
 	// Retorna a posição atual do rato na janela como um par de coordenadas (x, y)
 	std::pair<float, float> WindowSystem::GetMousePosition() {
 		double xpos, ypos;
 		glfwGetCursorPos(window_, &xpos, &ypos);
 		LOG("***** Mouse position: (" << xpos << ", " << ypos << ")");
 		return std::make_pair<float, float>(static_cast<float>(xpos), static_cast<float>(ypos));
+	}
+
+	void WindowSystem::SetKeyCallback(GLFWkeyfun callback) {
+		if (window_) {
+			glfwSetKeyCallback(window_, callback);
+			LOG("Key callback registered.");
+		}
+		else {
+			LOG("WindowSystem::SetKeyCallback: window_ is null.");
+		}
 	}
 }

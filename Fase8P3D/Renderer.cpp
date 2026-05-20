@@ -81,6 +81,7 @@ namespace game_engine_p3d {
 				// Se a luz for do tipo ambiente (Fonte de luz ambiente global)
 				if (light->type() == LightType::kAmbient) {
 					shader->SetUniform<glm::vec3>("ambientLight.ambient", light->ambient());
+					shader->SetUniform<int>("ambientLight.enabled", light->enabled());
 				}
 				// Se a luz for do tipo direcional (Fonte de luz direcional)
 				else if (light->type() == LightType::kDirectional) {
@@ -88,6 +89,7 @@ namespace game_engine_p3d {
 					shader->SetUniform<glm::vec3>("directionalLight.ambient", light->ambient());
 					shader->SetUniform<glm::vec3>("directionalLight.diffuse", light->diffuse());
 					shader->SetUniform<glm::vec3>("directionalLight.specular", light->specular());
+					shader->SetUniform<int>("directionalLight.enabled", light->enabled());
 				}
 				// FIXME: Estou apenas a enviar uma das duas luzes pontuais suportadas pelo shader
 				// Se a luz for do tipo pontual (Fonte de luz pontual)
@@ -99,6 +101,7 @@ namespace game_engine_p3d {
 					shader->SetUniform<float>("pointLight[0].constant", light->constant());
 					shader->SetUniform<float>("pointLight[0].linear", light->linear());
 					shader->SetUniform<float>("pointLight[0].quadratic", light->quadratic());
+					shader->SetUniform<int>("pointLight[0].enabled", light->enabled());
 				}
 				// Se a luz for do tipo cónica (Fonte de luz cónica)
 				else if (light->type() == LightType::kSpotlight) {
@@ -113,6 +116,7 @@ namespace game_engine_p3d {
 					shader->SetUniform<float>("spotLight.spotCutoff", light->cutOff());
 					//shader->SetUniform<float>("spotLight.spotOuterCutoff", light->outerCutOff());
 					shader->SetUniform<float>("spotLight.spotExponent", 12.0f); // Exponente da luz cónica (quanto maior, mais focada é a luz)
+					shader->SetUniform<int>("spotLight.enabled", light->enabled());
 				}
 			}
 		}

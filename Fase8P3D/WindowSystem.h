@@ -50,6 +50,10 @@ namespace game_engine_p3d {
 		static bool GetMouseButton(int button);				// Leitura do estado de um botão do rato.
 		static std::pair<float, float> GetMousePosition();	// Leitura da posição do rato na janela.
 
+
+		// Regista um callback de teclado na janela GLFW gerida por WindowSystem.
+		static void SetKeyCallback(GLFWkeyfun callback);
+
 	private:
 		static GLFWwindow* window_;
 	};

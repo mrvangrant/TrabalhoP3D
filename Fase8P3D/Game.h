@@ -45,7 +45,7 @@ namespace game_engine_p3d {
 		// ------------------------------------------------------------
 		// Construtores e destrutores
 		// ------------------------------------------------------------
-		Game(unsigned int width = kWindowDefaultWidth, unsigned int height = kWindowDefaultHeight, const char* title = "Game Window"); // Construtor com parâmetros.
+		Game(unsigned int width = kWindowDefaultWidth, unsigned int height = kWindowDefaultHeight, const char* title = "Game Window"); //Construtor com parametros
 		~Game(); // Destrutor (optamos por o definir explicitamente para posteriormente encerrarmos o sistema de 'WindowSystem', quando se destruir um objeto desta classe).
 		// ------------------------------------------------------------
 		// Accessors e mutators
@@ -63,7 +63,15 @@ namespace game_engine_p3d {
 		void Run();		// Função que contém o game loop e que processa a entrada do utilizador.
 		void Exit();	// Função para sair do jogo.
 
+		// Permite alternar uma luz pelo índice (0..n-1)
+		void ToggleLight(size_t index);
+
+		// Retorna a instância atual do jogo (útil para callbacks)
+		static Game* instance() { return instance_; }
+
 	private:
+		static Game* instance_; // Apontador para a instância atual do jogo (usado para acessar o jogo em callbacks, etc.)
+
 		// ------------------------------------------------------------
 		// Funções-membro privadas
 		// ------------------------------------------------------------
