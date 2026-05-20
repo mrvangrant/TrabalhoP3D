@@ -19,6 +19,9 @@
 
 #include <iostream>
 #include <vector>
+#include <unordered_map>
+#include <set>
+#include <algorithm>
 
 #include "Common.h"			// Inclui definições comuns e macros para o motor de jogo (neste caso, é necessário para utilização de 'kWindowDefaultWidth' e 'kWindowDefaultHeight').
 #include "Camera.h"			// Inclui a classe 'Camera' para manipulação de câmaras no jogo.
@@ -94,5 +97,9 @@ namespace game_engine_p3d {
 		std::vector<Light*> lights_{};			// Vetor de apontadores para luzes no jogo (um jogo pode ter várias luzes).
 		// NOTE: Relação de "agregação" de 'Game' com 'Object' (i.e., 'Game' possui uma coleção de objetos do jogo). Os objetos podem existir independentemente do jogo.
 		std::vector<Object*> objects_{};		// Vetor de apontadores para objetos no jogo.
+		// velocidade linear utilizada pelo sistema de colisão
+		std::unordered_map<int, glm::vec3> velocities_{};
+		// estados de colisão guardados como pares (id_min, id_max)
+		std::set<std::pair<int, int>> collisions_{};
 	};
 }

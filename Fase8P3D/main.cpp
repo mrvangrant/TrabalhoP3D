@@ -206,7 +206,7 @@ int main() {
 	
 
 	gep3d::Object* ball1 = new gep3d::Object("Ball1", "", nullptr, ballrenderer1, -5.5f, 0.0f, -4.0f);
-	gep3d::Object* ball2 = new gep3d::Object("Ball2", "", nullptr, ballrenderer2, 4.5f, 0.0f, -4.0f);
+	gep3d::Object* ball2 = new gep3d::Object("Ball2", "", nullptr, ballrenderer2, -5.0f, 0.0f, -4.3f);
 	gep3d::Object* ball3 = new gep3d::Object("Ball3", "", nullptr, ballrenderer3, -0.5f, 0.0f, -6.0f);
 	gep3d::Object* ball4 = new gep3d::Object("Ball4", "", nullptr, ballrenderer4, 1.5f, 0.0f, -8.0f);
 	gep3d::Object* ball5 = new gep3d::Object("Ball5", "", nullptr, ballrenderer5, -2.5f, 0.0f, -10.0f);

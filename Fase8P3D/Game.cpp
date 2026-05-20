@@ -5,6 +5,10 @@
 
 #include "Common.h" // Para definições comuns e macros
 #include "Game.h"
+#include <glm/glm.hpp>
+#include <unordered_map>
+#include <set>
+#include <algorithm>
 
 
 namespace game_engine_p3d {
@@ -119,6 +123,8 @@ namespace game_engine_p3d {
 		object->set_game(this);
 		// Adiciona o objeto ao vetor de objetos
 		objects_.push_back(object);
+		// initialize velocity for this object
+		velocities_[object->id()] = glm::vec3(0.0f);
 	}
 
 	Object* Game::FindObjectByName(const std::string& name) {
@@ -170,6 +176,89 @@ namespace game_engine_p3d {
 						// Atualiza cada objeto na fase final
 						object->LateUpdate();
 					}
+				// Integrate velocities (simple Euler) and then do sphere-sphere collisions
+				// Uses Transform.position_ as center and largest scale component * 0.5 as radius.
+				{
+					// integrate positions
+					for (auto obj : objects_) {
+						auto it = velocities_.find(obj->id());
+						if (it != velocities_.end()) {
+							glm::vec3 v = it->second;
+							if (glm::length(v) > 0.0f) {
+								glm::vec3 d = v * kPhysicsTimeStep;
+								obj->model().position_ += d;
+								obj->model().matrix_ = glm::translate(obj->model().matrix_, d);
+							}
+						}
+					}
+
+					std::set<std::pair<int, int>> currentCollisions;
+					for (size_t i = 0; i < objects_.size(); ++i) {
+						for (size_t j = i + 1; j < objects_.size(); ++j) {
+							Object* a = objects_[i];
+							Object* b = objects_[j];
+							// skip collisions with the table (named "Mesa")
+							if (a->name().find("Mesa") != std::string::npos || b->name().find("Mesa") != std::string::npos) {
+								continue;
+							}
+							float ra = std::max({ a->model().scale_.x, a->model().scale_.y, a->model().scale_.z }) * 0.5f;
+							float rb = std::max({ b->model().scale_.x, b->model().scale_.y, b->model().scale_.z }) * 0.5f;
+							float dist = glm::distance(a->model().position_, b->model().position_);
+							bool colliding = dist <= (ra + rb);
+							auto ids = std::minmax(a->id(), b->id());
+							if (colliding) {
+								currentCollisions.insert(ids);
+								if (collisions_.find(ids) == collisions_.end()) {
+									// overlap resolution
+									float penetration = (ra + rb) - dist;
+									glm::vec3 normal;
+									if (dist > 1e-6f) normal = glm::normalize(b->model().position_ - a->model().position_);
+									else normal = glm::vec3(1.0f, 0.0f, 0.0f);
+									if (penetration > 1e-6f) {
+										glm::vec3 move = normal * (penetration * 0.5f);
+										a->model().position_ -= move;
+										a->model().matrix_ = glm::translate(a->model().matrix_, -move);
+										b->model().position_ += move;
+										b->model().matrix_ = glm::translate(b->model().matrix_, move);
+									}
+
+									// compute impulse for equal-mass spheres (billiards-like)
+									glm::vec3 va = velocities_[a->id()];
+									glm::vec3 vb = velocities_[b->id()];
+									glm::vec3 rel = vb - va;
+									float velAlongNormal = glm::dot(rel, normal);
+									float restitution = 0.95f; // near-elastic for billiards
+									if (velAlongNormal < 0.0f) {
+										// moving towards each other -> apply elastic impulse
+										float j = (-(1.0f + restitution) * velAlongNormal) / 2.0f; // divide by 2 for equal mass
+										glm::vec3 impulse = j * normal;
+										velocities_[a->id()] -= impulse;
+										velocities_[b->id()] += impulse;
+									}
+									else {
+										// stationary or separating but overlapping (spawn overlap): give a small separation impulse
+										float sepStrength = std::min(penetration * 50.0f, 10.0f);
+										glm::vec3 sepImpulse = sepStrength * normal;
+										velocities_[a->id()] -= sepImpulse * 0.5f;
+										velocities_[b->id()] += sepImpulse * 0.5f;
+									}
+
+									std::cout << "Collision started between " << a->name() << " and " << b->name() << std::endl;
+									a->OnCollisionEnter(*b);
+									b->OnCollisionEnter(*a);
+								}
+							}
+							else {
+								if (collisions_.find(ids) != collisions_.end()) {
+									std::cout << "Collision ended between " << a->name() << " and " << b->name() << std::endl;
+									a->OnCollisionExit(*b);
+									b->OnCollisionExit(*a);
+								}
+							}
+						}
+					}
+					collisions_.swap(currentCollisions);
+				}
 					for (auto object : objects_) {
 						// Simula colisões e gatilhos
 						object->OnCollisionEnter(*object);	// Exemplo de colisão
