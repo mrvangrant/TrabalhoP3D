@@ -7,6 +7,7 @@
 #include "Object.h"
 #include "Shader.h"
 #include "Renderer.h" // Inclui a classe 'Renderer', que define o renderizador a associar a cada objeto do jogo
+#include "BallRollBehaviour.h" // Inclui a classe 'BallRollBehaviour', que define o comportamento de rolar a bola
 
 
 // ------------------------------------------------------------
@@ -22,7 +23,29 @@ namespace gep3d = game_engine_p3d;
 //Função de callback para eventos de teclado(1,2,3,4)
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action != GLFW_PRESS) return;// Processa apenas eventos de pressionamento de tecla (ignora os eventos de liberação e repetição)
-		
+	// Verifica se a tecla pressionada é a barra de espaço para começar a animação de rolar a bola
+	if (key == GLFW_KEY_SPACE) {
+
+		if (gep3d::Game::instance()) {
+
+			auto ball1 =
+				gep3d::Game::instance()->FindObjectByName("Ball1");
+
+			if (ball1) {
+
+				gep3d::Game::instance()->SetVelocity(
+					ball1,
+					// Define a velocidade inicial da bola para iniciar a animação de rolar a bola
+					glm::vec3(3.0f, 0.0f, -5.0f)
+				);
+
+				LOG("ball launched!");
+			}
+		}
+	}
+
+
+
 	if (key == GLFW_KEY_1) {
 		if (gep3d::Game::instance()){
 			gep3d::Game::instance()->ToggleLight(0); // Alterna a luz de índice 0 (Ambiente)
@@ -126,7 +149,7 @@ int main() {
 	// Cria uma luz cónica (spotlight)
 	gep3d::Light* spot_light = new gep3d::Light(
 		glm::vec3(0.0f, 6.0f, 3.0f),  // Posição da luz
-		glm::vec3(0.0f, -0.5f, -4.0f),   // Direção da luz
+		glm::vec3(0.0f, -2.0f, -4.0f),   // Direção da luz
 		glm::vec3(0.0f, 0.0f, 0.0f),    // Componente ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente difusa
 		glm::vec3(1.0f, 1.0f, 1.0f),    // Componente especular
@@ -195,6 +218,23 @@ int main() {
 	// Cria uma instância do comportamento Oscilator
 	Oscilator* oscilator = new Oscilator();
 
+	// cria instancias de comportamento BallRollBehaviour para as bolas
+	BallRollBehaviour* ballroll1 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll2 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll3 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll4 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll5 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll6 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll7 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll8 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll9 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll10 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll11 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll12 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll13 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll14 = new BallRollBehaviour(0.5f);
+	BallRollBehaviour* ballroll15 = new BallRollBehaviour(0.5f);
+
 	// --------------------------------------------------
 	// Preparação do(s) objeto(s) do jogo
 	// --------------------------------------------------
@@ -205,21 +245,21 @@ int main() {
 	gep3d::Object* table = new gep3d::Object("Mesa", "", nullptr, tablerrenderer, 0.0f, -0.75f, -15.0f, 0.0f,90.0f,0.0f,15.0f,15.0f,15.0f);
 	
 
-	gep3d::Object* ball1 = new gep3d::Object("Ball1", "", nullptr, ballrenderer1, -5.5f, 0.0f, -4.0f);
-	gep3d::Object* ball2 = new gep3d::Object("Ball2", "", nullptr, ballrenderer2, -5.0f, 0.0f, -4.3f);
-	gep3d::Object* ball3 = new gep3d::Object("Ball3", "", nullptr, ballrenderer3, -0.5f, 0.0f, -6.0f);
-	gep3d::Object* ball4 = new gep3d::Object("Ball4", "", nullptr, ballrenderer4, 1.5f, 0.0f, -8.0f);
-	gep3d::Object* ball5 = new gep3d::Object("Ball5", "", nullptr, ballrenderer5, -2.5f, 0.0f, -10.0f);
-	gep3d::Object* ball6 = new gep3d::Object("Ball6", "", nullptr, ballrenderer6, 5.5f, 0.0f, -10.0f);
-	gep3d::Object* ball7 = new gep3d::Object("Ball7", "", nullptr, ballrenderer7, -1.5f, 0.0f, -13.0f);
-	gep3d::Object* ball8 = new gep3d::Object("Ball8", "", nullptr, ballrenderer8, 3.5f, 0.0f, -13.0f);
-	gep3d::Object* ball9 = new gep3d::Object("Ball9", "", nullptr, ballrenderer9, 1.5f, 0.0f, -17.0f);
-	gep3d::Object* ball10 = new gep3d::Object("Ball10", "", nullptr, ballrenderer10, -3.5f, 0.0f, -18.0f);
-	gep3d::Object* ball11 = new gep3d::Object("Ball11", "", nullptr, ballrenderer11, -0.5f, 0.0f, -21.0f);
-	gep3d::Object* ball12 = new gep3d::Object("Ball12", "", nullptr, ballrenderer12, 4.5f, 0.0f, -21.0f);
-	gep3d::Object* ball13 = new gep3d::Object("Ball13", "", nullptr, ballrenderer13, -3.5f, 0.0f, -24.0f);
-	gep3d::Object* ball14 = new gep3d::Object("Ball14", "", nullptr, ballrenderer14, 3.5f, 0.0f, -25.0f);
-	gep3d::Object* ball15 = new gep3d::Object("Ball15", "", nullptr, ballrenderer15, -0.5f, 0.0f, -27.0f);
+	gep3d::Object* ball1 = new gep3d::Object("Ball1", "", ballroll1, ballrenderer1, -5.5f, 0.0f, -4.0f);
+	gep3d::Object* ball2 = new gep3d::Object("Ball2", "", ballroll2, ballrenderer2, -3.0f, 0.0f, -4.3f);
+	gep3d::Object* ball3 = new gep3d::Object("Ball3", "", ballroll3, ballrenderer3, -0.5f, 0.0f, -6.0f);
+	gep3d::Object* ball4 = new gep3d::Object("Ball4", "", ballroll4, ballrenderer4, 1.5f, 0.0f, -8.0f);
+	gep3d::Object* ball5 = new gep3d::Object("Ball5", "", ballroll5, ballrenderer5, -2.5f, 0.0f, -10.0f);
+	gep3d::Object* ball6 = new gep3d::Object("Ball6", "", ballroll6, ballrenderer6, 5.5f, 0.0f, -10.0f);
+	gep3d::Object* ball7 = new gep3d::Object("Ball7", "", ballroll7, ballrenderer7, -1.5f, 0.0f, -13.0f);
+	gep3d::Object* ball8 = new gep3d::Object("Ball8", "", ballroll8, ballrenderer8, 3.5f, 0.0f, -13.0f);
+	gep3d::Object* ball9 = new gep3d::Object("Ball9", "", ballroll9, ballrenderer9, 1.5f, 0.0f, -17.0f);
+	gep3d::Object* ball10 = new gep3d::Object("Ball10", "", ballroll10, ballrenderer10, -3.5f, 0.0f, -18.0f);
+	gep3d::Object* ball11 = new gep3d::Object("Ball11", "", ballroll11, ballrenderer11, -0.5f, 0.0f, -21.0f);
+	gep3d::Object* ball12 = new gep3d::Object("Ball12", "", ballroll12, ballrenderer12, 4.5f, 0.0f, -21.0f);
+	gep3d::Object* ball13 = new gep3d::Object("Ball13", "", ballroll13, ballrenderer13, -3.5f, 0.0f, -24.0f);
+	gep3d::Object* ball14 = new gep3d::Object("Ball14", "", ballroll14, ballrenderer14, 3.5f, 0.0f, -25.0f);
+	gep3d::Object* ball15 = new gep3d::Object("Ball15", "", ballroll15, ballrenderer15, -0.5f, 0.0f, -27.0f);
 
 	// --------------------------------------------------
 	// Adiciona o(s) objeto(s) ao jogo
@@ -287,6 +327,25 @@ int main() {
 	delete directional_light;
 	delete point_light;
 	delete spot_light;
+
+	// delete aos comportamentos das bolas
+	// delete ball roll behaviours
+	delete ballroll1;
+	delete ballroll2;
+	delete ballroll3;
+	delete ballroll4;
+	delete ballroll5;
+	delete ballroll6;
+	delete ballroll7;
+	delete ballroll8;
+	delete ballroll9;
+	delete ballroll10;
+	delete ballroll11;
+	delete ballroll12;
+	delete ballroll13;
+	delete ballroll14;
+	delete ballroll15
+
 
 	LOG("Exit!");
 

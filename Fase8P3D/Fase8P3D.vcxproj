@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BallRollBehaviour.h" />
     <ClInclude Include="Behaviour.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Common.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="WindowSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BallRollBehaviour.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Light.cpp" />

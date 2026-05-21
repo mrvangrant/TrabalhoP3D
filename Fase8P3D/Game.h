@@ -28,7 +28,7 @@
 #include "Light.h"			// Inclui a classe 'Light' para manipulação de luzes no jogo.
 #include "Object.h"			// Inclui a classe 'Object' para manipulação de objetos no jogo.
 #include "WindowSystem.h"	// Inclui a classe 'WindowSystem' para manipulação da janela da aplicação e entrada do utilizador (teclado e rato).
-
+#include <glm/glm.hpp>
 
 namespace game_engine_p3d {
 
@@ -68,6 +68,10 @@ namespace game_engine_p3d {
 
 		// Permite alternar uma luz pelo índice (0..n-1)
 		void ToggleLight(size_t index);
+
+		// velocidade para iniciar animação de um objeto (usada para o sistema de colisão)
+		void SetVelocity(Object* object, const glm::vec3& velocity);
+
 
 		// Retorna a instância atual do jogo (útil para callbacks)
 		static Game* instance() { return instance_; }

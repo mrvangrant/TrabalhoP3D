@@ -135,6 +135,14 @@ namespace game_engine_p3d {
 		}
 		return nullptr; // Retorna nullptr se o objeto não for encontrado
 	}
+
+	void Game::SetVelocity(Object* object, const glm::vec3& velocity) {
+
+		if (!object)
+			return;
+
+		velocities_[object->id()] = velocity;
+	}
 	
 
 	void Game::Run() {
@@ -177,7 +185,7 @@ namespace game_engine_p3d {
 						object->LateUpdate();
 					}
 				// Integrate velocities (simple Euler) and then do sphere-sphere collisions
-				// Uses Transform.position_ as center and largest scale component * 0.5 as radius.
+				
 				{
 					// integrate positions
 					for (auto obj : objects_) {
@@ -186,12 +194,18 @@ namespace game_engine_p3d {
 							glm::vec3 v = it->second;
 							if (glm::length(v) > 0.0f) {
 								glm::vec3 d = v * kPhysicsTimeStep;
-								obj->model().position_ += d;
-								obj->model().matrix_ = glm::translate(obj->model().matrix_, d);
+
+								//mark
+
+								/*obj->model().position_ += d;
+								obj->model().matrix_ = glm::translate(obj->model().matrix_, d);*/
+
+								obj->model().Translate(d.x, d.y, d.z);
 							}
 						}
 					}
 
+					//colisões simples de esfera-esfera (billiards-like) usando bounding spheres e resolução de penetração + impulso
 					std::set<std::pair<int, int>> currentCollisions;
 					for (size_t i = 0; i < objects_.size(); ++i) {
 						for (size_t j = i + 1; j < objects_.size(); ++j) {
@@ -201,8 +215,8 @@ namespace game_engine_p3d {
 							if (a->name().find("Mesa") != std::string::npos || b->name().find("Mesa") != std::string::npos) {
 								continue;
 							}
-							float ra = std::max({ a->model().scale_.x, a->model().scale_.y, a->model().scale_.z }) * 0.5f;
-							float rb = std::max({ b->model().scale_.x, b->model().scale_.y, b->model().scale_.z }) * 0.5f;
+							float ra = std::max({ a->model().scale_.x, a->model().scale_.y, a->model().scale_.z }) * 1.0f;
+							float rb = std::max({ b->model().scale_.x, b->model().scale_.y, b->model().scale_.z }) * 1.0f;
 							float dist = glm::distance(a->model().position_, b->model().position_);
 							bool colliding = dist <= (ra + rb);
 							auto ids = std::minmax(a->id(), b->id());
@@ -216,10 +230,16 @@ namespace game_engine_p3d {
 									else normal = glm::vec3(1.0f, 0.0f, 0.0f);
 									if (penetration > 1e-6f) {
 										glm::vec3 move = normal * (penetration * 0.5f);
-										a->model().position_ -= move;
+										//mark
+
+										/*a->model().position_ -= move;
 										a->model().matrix_ = glm::translate(a->model().matrix_, -move);
 										b->model().position_ += move;
-										b->model().matrix_ = glm::translate(b->model().matrix_, move);
+										b->model().matrix_ = glm::translate(b->model().matrix_, move);*/
+
+										a->model().Translate(-move.x, -move.y, -move.z);
+
+										b->model().Translate(move.x, move.y, move.z);
 									}
 
 									// compute impulse for equal-mass spheres (billiards-like)

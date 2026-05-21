@@ -14,8 +14,10 @@
 
 
 #include <vector> // Para std::vector
+#include <string> // Para std::string
 
 #include "Transform.h" // Inclui a classe 'Transform'
+#include "Common.h"      // Define 'Layer' e constantes/macros comuns
 
 
 namespace game_engine_p3d {

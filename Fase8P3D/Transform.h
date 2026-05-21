@@ -40,19 +40,19 @@ namespace game_engine_p3d {
 		void Rotate(float delta_pitch, float delta_yaw, float delta_roll);
 		void Scale(float scale_x, float scale_y, float scale_z);
 
+		// Apply rolling rotation for a sphere that moved by 'displacement' (world units),
+		// assuming 'radius' is the sphere radius. (Rolling without slipping)
+		void ApplyRolling(const glm::vec3& displacement, float radius, const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
+
 		// ------------------------------------------------------------
 		// Dados-membro públicos
 		// ------------------------------------------------------------
 		glm::vec3 position_ = glm::vec3(0.0f);		// x, y, z
 		glm::vec3 orientation_ = glm::vec3(0.0f);	// pitch, yaw, roll. Se se imaginar um avião orientado no sentido do eixo do Z negativo, o pitch é o ângulo de subida/descida (rodar em torno de X), yaw é a rotação em torno do eixo vertical (Y) e roll é a rotação em torno do eixo longitudinal (Z).
-		// FIXME: Implementar a orientação com recurso a um quaternion para evitar problemas de gimbal lock e facilitar rotações compostas.
-		// glm::quat orientation_quat_ = glm::quat(1.0f, 0.0f, 0.0f, 0.0f); // Quaternion de orientação, i.e. rotação,  inicializado como identidade.
+		
+		glm::quat orientation_quat_ = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 		glm::vec3 scale_ = glm::vec3(1.0f);			// scale_x, scale_y, scale_z
 		glm::mat4 matrix_ = glm::mat4(1.0f);		// Matriz de transformação (inicializada como matriz identidade).
-
-
-
-		
 	};
 
 }

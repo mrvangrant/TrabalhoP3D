@@ -27,54 +27,52 @@ using namespace game_engine_p3d; // Usar o namespace do motor de jogo para evita
 
 class Oscilator : public Behaviour {
 private:
-	float tempo_ = 0.0f;		// Tempo acumulado
-	float velocidade_ = 1.0f;	// Velocidade de oscilação
-	bool pause = false;			// Indica se o oscilador está pausado
+
+
+	bool moving_ = false;
+
+	glm::vec3 velocity_ = glm::vec3(5.0f, 0.0f, 0.0f);
+
+	float ball_radius_ = 0.5f;
 
 public:
-	// Indica que a função está a substituir (overriding) uma função virtual, com o mesmo nome, na classe base.
 	void Start(Object& object) override {
-		tempo_ = 0; // Inicializa o tempo acumulado
-		LOG("[Oscilator] Start() invoked -> tempo_ = " << tempo_); // Regista a inicialização do oscilador
+
+		LOG("[Oscilator] Start()");
 	}
 
 	void Update(Object& object) override {
-		Object* obj = object.game()->FindObjectByName("Objecto (2)"); // Encontra o objeto "Objecto (2)" no jogo
-		Object* obj3 = object.game()->FindObjectByName("Objecto (3)"); // Encontra o objeto "Objecto (3)" no jogo
-		obj->model().Rotate(0.0f, 4.1f, 0.0f); // Roda o objeto "Objecto (2)" ligeiramente ao longo do eixo y em cada frame
 		
+		//Object* obj = object.game()->FindObjectByName("ball1"); // Encontra o objeto "Objecto (2)" no jogo
 
-		tempo_ += 0.1f * velocidade_; // Incrementa o tempo acumulado
-		//LOG("[Oscilator] Update() invoked -> tempo_ = " << tempo_);
+		//// Ativar animação
+		//if (WindowSystem::GetKey(GLFW_KEY_SPACE) == true) {
+		//	moving_ = true;
 
-		obj3->model().Translate(0.0f, 0.0f, 2.0f * cos(tempo_)); // Move o objeto "Objecto (3)" ligeiramente para a frente em cada frame
+
+		//	LOG("[Oscilator] Space key pressed. sending ball.");
 
 
-		// Atualiza a posição do objeto "Objecto (1)" para oscilar em torno do eixo Y com base no tempo acumulado
-		object.model().Rotate(
-			2.0f * sin(tempo_),
-			1.0f * sin(tempo_), // Oscila em torno do eixo Y
-			2.0f
-		); // Atualiza a posição do objeto com base no tempo acumulado
+		//	
+		//}
 
-		// Exemplo de uso de WindowSystem
-		/*if (WindowSystem::GetKey(GLFW_KEY_SPACE) == true && WindowSystem::GetKey(GLFW_KEY_LEFT_CONTROL) == true) {
-			LOG("[Oscilator] Space key + Left Ctrl are pressed.");
-		}*/
+		//// Movimento
+		//if (moving_) {
 
-		// Exemplo de Pausa do jogo
-		if (WindowSystem::GetKey(GLFW_KEY_ESCAPE) == true) {
-			LOG("[Oscilator] Escape key pressed. Toggling pause state.");
+		//	// DeltaTime temporário
+		//	float dt = 0.016f;
 
-			// Aqui poderia chamar uma função para pausar o jogo, se implementada
-			pause = !pause; // Alterna o estado de pausa
-			if (pause) {
-				LOG("[Oscilator] Game paused.");
-			}
-			else {
-				LOG("[Oscilator] Game resumed.");
-			}
-		}
+		//	// deslocamento deste frame
+		//	glm::vec3 displacement = velocity_ * dt;
+
+		//	// mover bola
+		//	obj->model().Translate(
+		//		displacement.x,
+		//		displacement.y,
+		//		displacement.z
+		//	);
+		//}
+
 
 		auto mouse_pos = WindowSystem::GetMousePosition(); // Obtém a posição do rato
 		LOG("[Oscilator] Mouse position: (" << mouse_pos.first << ", " << mouse_pos.second << ")");
