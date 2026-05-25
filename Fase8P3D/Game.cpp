@@ -273,7 +273,6 @@ namespace game_engine_p3d {
 						for (size_t j = i + 1; j < objects_.size(); ++j) {
 							Object* a = objects_[i];
 							Object* b = objects_[j];
-							// skip collisions with the table (named "Mesa")
 							// ignorar mesa e paredes nas colisões
 							if (
 								a->name().find("Mesa") != std::string::npos ||

@@ -123,34 +123,15 @@ void main()
 	// ----------------------------------------------------------------
 	// Combinar luzes de forma mais realista
 	vec4 directLighting = vec4(0.0);
-	float totalWeight = 0.0;
 
-	// Somar contribuições com pesos baseados na distância/intensidade
 	for(int i = 0; i < 4; i++) {
-		if(length(light[i].rgb) > 0.001) { // Apenas se a luz contribui significativamente
-			float weight = 1.0 / (1.0 + length(light[i].rgb)); // Peso inversamente proporcional à intensidade
-			directLighting += light[i] * weight;
-			totalWeight += weight;
-		}
-	}
-
-	// Normalizar pela soma dos pesos
-	if(totalWeight > 0.0) {
-		directLighting /= totalWeight;
+		directLighting += light[i];
 	}
 
 	// Combinar com ambiente de forma mais suave
 	vec4 finalAmbient = ambient; // Reduzir ainda mais a contribuição ambiente
 	fColor = emissive + finalAmbient + directLighting;
-	fColor = min(fColor, 1.0);
-	// ----------------------------------------------------------------
-
-	// ************************************************************************
-	// Apenas para efeitos de demonstração, definir a cor do fragmento como 'magenta'
-	// NOTA: Esta linha deve ser removida quando o código estiver a funcionar corretamente.
-	// ************************************************************************
-	// Definindo a cor do fragmento como 'magenta'
-	//fColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+	fColor = clamp(fColor, 0.0, 1.0);
 }
 
 // Cálculo da contribuição da fonte de luz ambiente global para a cor final do fragmento.
@@ -187,14 +168,19 @@ vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient) {
 	// Nota que multiplicar o vetor de posição da câmara pela matriz View resulta no vetor (0,0,0).
 	// Que pode ser simplificado como:
 	//		- vPositionEyeSpace
-	vec3 V = normalize(-vPositionEyeSpace);
-	//vec3 H = normalize(L + V);	// Modelo Blinn-Phong
-	vec3 R = reflect(-L, N);
-	float RdotV = max(dot(R, V), 0.0);
-	//float NdotH = max(dot(N, H), 0.0);	// Modelo Blinn-Phong
-	vec4 specular = pow(RdotV, material.shininess) * vec4(light.specular * material.specular, 1.0);
+	vec4 specular = vec4(0.0);
 
-	// Cálculo da contribuição da fonte de luz direcional para a cor final do fragmento.
+	if(NdotL > 0.0)
+	{
+		vec3 V = normalize(-vPositionEyeSpace);
+
+		vec3 R = reflect(-L, N);
+
+		float RdotV = max(dot(R, V), 0.0);
+
+		specular = pow(RdotV, material.shininess) * vec4(light.specular * material.specular, 1.0);
+	}
+		// Cálculo da contribuição da fonte de luz direcional para a cor final do fragmento.
 	return (diffuse + specular);
 }
 
